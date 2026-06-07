@@ -1,5 +1,64 @@
-# Vue 3 + Vite
+# 📚 幸存者偏差学习体验
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+> 把数学课本变成交互式游戏！亲历一次二战美军轰炸机的决策之旅！
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## ✨ 项目特色
+
+- 🎮 **沉浸式叙事** - 回到 1943 年的二战战场
+- 🤖 **AI 证人** - Joe、Bill、Wald 三位角色带你探究真相
+- 🔄 **时空回溯** - 可以「回到过去」修改决策，体验平行宇宙
+- 💡 **数学解密** - 在错误中理解幸存者偏差
+- 🎨 **复古档案风格** - 军事档案 + 数学黑板的视觉风格
+
+## 🛠️ 技术栈
+
+- **Vue 3** - Composition API + `<script setup>`
+- **Vite** - 现代化开发工具
+- **纯原生 CSS** - 深色/浅色双主题
+- **SVG 动画** - 精巧的交互动效
+
+## 📖 游戏流程
+
+1. **任务简报** - 了解任务背景
+2. **审讯证人** - 和三位证人对话收集线索
+3. **提交判断** - 选择应该加固飞机的哪些部位
+4. **真相揭露** - 看到返航 vs 未返航的数据对比
+5. **平行宇宙** - 对比你的决策 vs 最优决策，还能时空回溯
+
+## 🚀 快速开始
+
+```bash
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+```
+
+## 🎯 教育意义
+
+这个项目通过真实历史案例，生动展示了「幸存者偏差」这个重要的统计学概念：
+- 我们看到的数据（返航飞机）是有偏的
+- 真正致命的部位（发动机/驾驶舱）在返航数据中很少弹孔
+- 因为被击中这些部位的飞机，根本没有机会返航！
+
+## 📝 学习内容
+
+- 幸存者偏差
+- 选择性偏误
+- 遗漏变量偏误
+
+## 🎨 界面效果
+
+- ✨ 双主题支持（深色/浅色）
+- 🎬 平滑场景过渡
+- 💬 消息滑入动画
+- 🖼️ 飞机 SVG 区域高亮
+
+---
+
+> 「我们看到的，告诉我们飞机能承受什么。我们看不到的，才告诉我们飞机会在哪里折断。」  
+> — Abraham Wald (1943)
