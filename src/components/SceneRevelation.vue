@@ -119,8 +119,9 @@
       <cite>— Abraham Wald，1943</cite>
     </div>
 
-    <div style="display:flex; justify-content:center; margin-top:36px">
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:36px">
       <button class="btn" @click="restart">重新开始 ↺</button>
+      <button class="btn" @click="$emit('next')">进入平行宇宙 ⟶</button>
     </div>
 
     <!-- 小黑板弹窗 -->
@@ -140,6 +141,8 @@ import { concepts } from '../data/concepts.js'
 
 const verdictCorrect = inject('verdictCorrect')
 const verdictTypeRef  = inject('verdictType')
+
+const vType = computed(() => verdictTypeRef?.value ?? 'wrong')
 
 const showModal = ref(false)
 const selectedConcept = ref(null)
@@ -175,18 +178,13 @@ function openConcept(conceptId) {
   margin-bottom: 8px;
   border: 1px solid;
 }
-.result-banner.correct { 
-  border-color: #2a6a2a;       
-  background: #0a180a; 
-}
-.result-banner.partial { 
-  border-color: var(--amber-dim); 
-  background: #140e00; 
-}
-.result-banner.wrong   { 
-  border-color: var(--red);    
-  background: #180a0a; 
-}
+.result-banner.correct { border-color: #2a6a2a;       background: #0a180a; }
+.result-banner.partial { border-color: var(--amber-dim); background: #140e00; }
+.result-banner.wrong   { border-color: var(--red);       background: #180a0a; }
+
+[data-theme="light"] .result-banner.correct { background: #ddeedd; border-color: #4a8a4a; }
+[data-theme="light"] .result-banner.partial { background: #f5ead8; border-color: var(--amber-dim); }
+[data-theme="light"] .result-banner.wrong   { background: #f5dede; border-color: #8b1a1a; }
 
 .two-col {
   display: grid;
@@ -204,6 +202,10 @@ function openConcept(conceptId) {
   border: 1px solid #2a4a2a;
   padding: 18px 22px;
   text-align: center;
+}
+[data-theme="light"] .insight-box {
+  background: #e4eede;
+  border-color: #7aaa7a;
 }
 .insight-box p { font-size: 0.9rem; color: var(--text); line-height: 1.75; }
 .insight-box strong { color: var(--amber-bright); }

@@ -2,6 +2,18 @@
   <div class="plane-map-wrap">
     <svg viewBox="0 0 420 350" xmlns="http://www.w3.org/2000/svg" class="plane-svg">
       <defs>
+        <!-- 选择区域高亮渐变 -->
+        <radialGradient id="selected-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#c8a84b" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#c8a84b" stop-opacity="0.08"/>
+        </radialGradient>
+        <!-- 最优选择高亮 -->
+        <radialGradient id="optimal-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#4a8a4a" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#4a8a4a" stop-opacity="0.1"/>
+        </radialGradient>
+      </defs>
+      <defs>
         <!-- 纸张噪点纹理 -->
         <filter id="paper-texture" x="-5%" y="-5%" width="110%" height="110%">
           <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
@@ -137,6 +149,40 @@
         </text>
       </g>
 
+      <!-- ══ 选择区域高亮（只显示不交互）══ -->
+      <template v-if="showSelectedZones">
+        <!-- 左机翼 -->
+        <polygon v-if="selectedZones.has('left-wing')"
+                 points="190,140 55,160 55,185 190,180"
+                 fill="url(#selected-grad)" stroke="#c8a84b" stroke-width="2"
+                 stroke-dasharray="4,3" rx="4"/>
+        <!-- 右机翼 -->
+        <polygon v-if="selectedZones.has('right-wing')"
+                 points="218,140 358,160 358,185 218,180"
+                 fill="url(#selected-grad)" stroke="#c8a84b" stroke-width="2"
+                 stroke-dasharray="4,3" rx="4"/>
+        <!-- 机身 -->
+        <ellipse v-if="selectedZones.has('fuselage')"
+                 cx="205" cy="180" rx="25" ry="95"
+                 fill="url(#selected-grad)" stroke="#c8a84b" stroke-width="2"
+                 stroke-dasharray="4,3"/>
+        <!-- 左发动机 -->
+        <rect v-if="selectedZones.has('left-engine')"
+              x="72" y="143" width="108" height="44" rx="4"
+              fill="url(#selected-grad)" stroke="#c8a84b" stroke-width="2"
+              stroke-dasharray="4,3"/>
+        <!-- 右发动机 -->
+        <rect v-if="selectedZones.has('right-engine')"
+              x="228" y="143" width="108" height="44" rx="4"
+              fill="url(#selected-grad)" stroke="#c8a84b" stroke-width="2"
+              stroke-dasharray="4,3"/>
+        <!-- 驾驶舱 -->
+        <ellipse v-if="selectedZones.has('cockpit')"
+                 cx="205" cy="77" rx="26" ry="34"
+                 fill="url(#selected-grad)" stroke="#c8a84b" stroke-width="2"
+                 stroke-dasharray="4,3"/>
+      </template>
+
       <!-- ══ 可交互点击区（透明覆盖层，贴合图片飞机）══ -->
       <template v-if="interactive">
         <!-- 左机翼（翼展弧形区域）-->
@@ -186,10 +232,15 @@ const props = defineProps({
   showBulletHoles: { type: Boolean, default: false },
   showGhost:       { type: Boolean, default: false },
   interactive:     { type: Boolean, default: false },
+  selectedZones:   { type: Set, default: () => new Set() },
+  showSelectedZones: { type: Boolean, default: false },
 })
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'update:selectedZones'])
 
-const selectedZones = reactive(new Set())
+const localSelected = reactive(new Set())
+const selectedZones = props.showSelectedZones 
+  ? props.selectedZones 
+  : localSelected
 const correctZones = new Set(['left-engine', 'right-engine', 'cockpit'])
 
 function selectZone(zone) {

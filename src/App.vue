@@ -43,7 +43,17 @@
     <component
       :is="currentScene"
       :key="sceneIndex"
+      v-if="sceneIndex === 4"
+      :latestChoice="lastChoice"
+      :decisionHistory="decisionHistory"
       @next="goNext"
+      @retry="goToRetry"
+    />
+    <component
+      :is="currentScene"
+      :key="sceneIndex"
+      v-else
+      @next="sceneIndex === 3 ? goToParallel() : goNext()"
       @verdict="handleVerdict"
     />
   </Transition>
@@ -55,12 +65,15 @@ import SceneBriefing from './components/SceneBriefing.vue'
 import SceneInterrogation from './components/SceneInterrogation.vue'
 import SceneVerdict from './components/SceneVerdict.vue'
 import SceneRevelation from './components/SceneRevelation.vue'
+import SceneParallel from './components/SceneParallel.vue'
 
-const scenes = [SceneBriefing, SceneInterrogation, SceneVerdict, SceneRevelation]
+const scenes = [SceneBriefing, SceneInterrogation, SceneVerdict, SceneRevelation, SceneParallel]
 const sceneIndex = ref(0)
 const verdictCorrect = ref(false)
 const verdictType = ref('wrong')
 const missionId = Math.floor(Math.random() * 9000 + 1000)
+const decisionHistory = ref([])
+const lastChoice = ref(new Set())
 const bootDone = ref(false)
 const transitionName = ref('slide-forward')
 
@@ -90,11 +103,31 @@ function goNext() {
   if (sceneIndex.value < scenes.length - 1) sceneIndex.value++
 }
 
-function handleVerdict({ correct, verdictType: vt }) {
+function handleVerdict({ correct, verdictType: vt, zones }) {
   transitionName.value = 'slide-forward'
   verdictCorrect.value = correct
   verdictType.value = vt ?? 'wrong'
+  
+  // 记录这次决策
+  lastChoice.value = new Set(zones)
+  decisionHistory.value.push({
+    choice: zones,
+    type: vt,
+    timestamp: Date.now()
+  })
+  
+  // 跳转到真相页
   sceneIndex.value = 3
+}
+
+function goToParallel() {
+  transitionName.value = 'slide-forward'
+  sceneIndex.value = 4
+}
+
+function goToRetry() {
+  transitionName.value = 'slide-backward'
+  sceneIndex.value = 2
 }
 
 provide('verdictCorrect', verdictCorrect)
@@ -128,14 +161,28 @@ provide('verdictType', verdictType)
 /* ── 场景切换 ── */
 .slide-forward-enter-active,
 .slide-forward-leave-active {
-  transition: opacity 0.3s ease, transform 0.35s ease;
+  transition: opacity 0.45s ease-out, transform 0.5s ease-out;
 }
 .slide-forward-enter-from {
   opacity: 0;
-  transform: translateX(52px);
+  transform: translateX(32px);
 }
 .slide-forward-leave-to {
   opacity: 0;
-  transform: translateX(-36px);
+  transform: translateX(-24px);
+}
+
+/* 滑动返回（向过去回溯） */
+.slide-backward-enter-active,
+.slide-backward-leave-active {
+  transition: opacity 0.45s ease-out, transform 0.5s ease-out;
+}
+.slide-backward-enter-from {
+  opacity: 0;
+  transform: translateX(-32px);
+}
+.slide-backward-leave-to {
+  opacity: 0;
+  transform: translateX(24px);
 }
 </style>

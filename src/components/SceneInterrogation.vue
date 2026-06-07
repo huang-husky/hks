@@ -34,7 +34,7 @@ defineEmits(['next'])
 <style scoped>
 .chat-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 16px;
   margin-bottom: 32px;
 }

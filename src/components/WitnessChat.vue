@@ -1,12 +1,14 @@
 <template>
-  <div class="chat-wrap">
+  <div class="chat-wrap" :style="{ '--witness-color': witness.color }">
     <div class="chat-header">
-      <span class="witness-avatar">{{ witness.avatar }}</span>
+      <div class="witness-avatar-badge">
+        <span class="witness-avatar">{{ witness.avatar }}</span>
+      </div>
       <div>
         <div class="witness-name">{{ witness.name }}</div>
         <div class="witness-title">{{ witness.title }}</div>
       </div>
-      <button class="btn btn-sm" style="margin-left:auto" @click="clearMessages" title="清空对话记录">清空</button>
+      <button class="btn btn-sm btn-clear" @click="clearMessages" title="清空对话记录">清空</button>
     </div>
 
     <div class="chat-log" ref="logEl">
@@ -37,7 +39,7 @@
         @keydown.enter="sendMessage"
         :disabled="loading"
       />
-      <button class="btn btn-sm" @click="sendMessage" :disabled="loading || !inputText.trim()">
+      <button class="btn btn-sm btn-send" @click="sendMessage" :disabled="loading || !inputText.trim()">
         发送
       </button>
     </div>
@@ -102,8 +104,14 @@ function clearMessages() {
   height: 320px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
+  transition: box-shadow 0.4s ease-out, transform 0.4s ease-out;
+}
+.chat-wrap:hover {
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--witness-color) 25%, transparent),
+              0 3px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1.5px);
 }
 .chat-header {
   display: flex;
@@ -111,21 +119,31 @@ function clearMessages() {
   gap: 12px;
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
-  background: var(--bg-card);
+  background: color-mix(in srgb, var(--witness-color) 10%, var(--bg-card));
+}
+.witness-avatar-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--witness-color);
+  background: color-mix(in srgb, var(--witness-color) 15%, var(--bg-card));
 }
 .witness-avatar {
   font-size: 1.6rem;
+  filter: drop-shadow(0 0 4px var(--witness-color));
 }
 .witness-name {
   font-family: var(--font-elegant);
-  font-size: 1.1rem;
-  color: var(--amber-bright);
-  letter-spacing: 0.08em;
-  text-shadow: var(--glow-h3);
+  font-size: 0.98rem;
+  color: var(--witness-color);
+  letter-spacing: 0.06em;
 }
 .witness-title {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-dim);
 }
 .chat-log {
@@ -134,7 +152,7 @@ function clearMessages() {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 .chat-empty {
   font-family: var(--font-mono);
@@ -144,7 +162,16 @@ function clearMessages() {
   margin-top: 60px;
   letter-spacing: 0.1em;
 }
-.chat-msg { display: flex; flex-direction: column; gap: 3px; }
+.chat-msg { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 3px; 
+  animation: slideInSoft 0.3s ease-out;
+}
+@keyframes slideInSoft {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .chat-msg.user { align-items: flex-end; }
 .chat-msg.assistant { align-items: flex-start; }
 .msg-role {
@@ -157,9 +184,9 @@ function clearMessages() {
 }
 .chat-msg p {
   max-width: 82%;
-  padding: 10px 14px;
-  font-size: 0.96rem;
-  line-height: 1.7;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  line-height: 1.6;
 }
 .chat-msg.user p {
   background: var(--bg-msg-user);
@@ -167,15 +194,15 @@ function clearMessages() {
   color: var(--color-msg-user);
 }
 .chat-msg.assistant p {
-  background: var(--bg-msg-assist);
-  border: 1px solid var(--border-msg-assist);
+  background: color-mix(in srgb, var(--witness-color) 8%, var(--bg-msg-assist));
+  border: 1px solid color-mix(in srgb, var(--witness-color) 35%, var(--border-msg-assist));
   color: var(--color-msg-assist);
 }
 .thinking {
   letter-spacing: 0.3em;
-  animation: pulse 1.2s ease-in-out infinite;
+  animation: pulse 1.8s ease-in-out infinite;
 }
-@keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
 .chat-input-row {
   display: flex;
   gap: 8px;
@@ -192,8 +219,16 @@ function clearMessages() {
   padding: 8px 12px;
   outline: none;
 }
-.chat-input:focus { border-color: var(--amber-dim); }
+.chat-input:focus { border-color: var(--witness-color); }
 .chat-input::placeholder { color: var(--text-dim); }
+.btn-clear {
+  background: color-mix(in srgb, var(--witness-color) 10%, transparent);
+  border-color: color-mix(in srgb, var(--witness-color) 30%, var(--border));
+}
+.btn-send {
+  background: color-mix(in srgb, var(--witness-color) 12%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--witness-color) 45%, var(--border));
+}
 
 /* ── 浅色模式适配 ── */
 [data-theme="light"] .witness-name {
