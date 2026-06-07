@@ -1,0 +1,363 @@
+/* ── 本地字体 ── */
+@font-face {
+  font-family: 'Seventeen';
+  src: url('../fonts/seventeen.TTF') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Shouxie';
+  src: url('../fonts/shouxie.woff2') format('woff2'),
+       url('../fonts/shouxie.ttf')   format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HarmonyOS';
+  src: url('../fonts/HarmonyOS_Medium.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* ── 全局重置 ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ══════════════════════════════════
+   深色主题（默认）
+══════════════════════════════════ */
+:root {
+  --bg:          #080e08;
+  --bg-card:     #0d160d;
+  --bg-input:    #111a11;
+  --amber:       #c8a84b;
+  --amber-dim:   #7a6428;
+  --amber-bright:#f0cc6a;
+  --red:         #c0392b;
+  --border:      #243424;
+  --text:           #b8a040;
+  --text-dim:       #6a5c20;
+  --bg-hover-card:  #141f14;
+
+  /* 字体角色（Seventeen 只覆盖 ASCII，中文自动回退 HarmonyOS）*/
+  --font-display: 'Seventeen', 'HarmonyOS', 'PingFang SC', sans-serif;
+  --font-body:    'HarmonyOS', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-hand:    'Shouxie', 'HarmonyOS', cursive;
+  --font-elegant: 'HarmonyOS', 'PingFang SC', sans-serif;
+  --font-mono:    'HarmonyOS', 'Courier New', monospace;
+
+  /* 聊天气泡（深色）*/
+  --bg-msg-user:       #1c301c;
+  --border-msg-user:   #7a6428;
+  --color-msg-user:    #c8a84b;
+  --bg-msg-assist:     #0a150a;
+  --border-msg-assist: #1e2e1e;
+  --color-msg-assist:  #b8a040;
+
+  /* 光晕（深色模式才用） */
+  --glow-h1: 0 0 10px rgba(240,204,106,0.75), 0 0 28px rgba(240,204,106,0.3), 0 0 56px rgba(240,204,106,0.1);
+  --glow-h2: 0 0 7px  rgba(200,168,75,0.65),  0 0 20px rgba(200,168,75,0.2);
+  --glow-h3: 0 0 6px  rgba(200,168,75,0.5);
+  --glow-body: 0 0 5px rgba(200,168,75,0.4), 0 0 16px rgba(200,168,75,0.12);
+  --glow-btn-hover: 0 0 22px rgba(200,168,75,0.55), 0 0 44px rgba(200,168,75,0.2);
+  --glow-stamp: 0 0 8px rgba(192,57,43,0.7);
+  --glow-stamp-box: 0 0 10px rgba(192,57,43,0.2);
+
+  /* 暗角 */
+  --vignette: radial-gradient(ellipse at center, transparent 52%, rgba(0,0,0,0.6) 100%);
+}
+
+/* ══════════════════════════════════
+   浅色主题（羊皮纸军事档案）
+══════════════════════════════════ */
+[data-theme="light"] {
+  --bg:          #f0e6cc;
+  --bg-card:     #e8d9b8;
+  --bg-input:    #ede2c8;
+  --amber:       #5a3608;
+  --amber-dim:   #9a6e30;
+  --amber-bright:#3a2005;
+  --red:            #8b1a1a;
+  --border:         #c8a870;
+  --text:           #4a3212;
+  --text-dim:       #9a7848;
+  --bg-hover-card:  #ddd0b0;
+
+  /* 聊天气泡（浅色）*/
+  --bg-msg-user:       #c8b878;
+  --border-msg-user:   #a08040;
+  --color-msg-user:    #2a1808;
+  --bg-msg-assist:     #e4d5ae;
+  --border-msg-assist: #c8a870;
+  --color-msg-assist:  #3a2808;
+
+  --glow-h1:   none;
+  --glow-h2:   none;
+  --glow-h3:   none;
+  --glow-body: none;
+  --glow-btn-hover: 0 2px 12px rgba(90,54,8,0.25);
+  --glow-stamp: none;
+  --glow-stamp-box: 0 0 4px rgba(139,26,26,0.15);
+  --vignette: radial-gradient(ellipse at center, transparent 60%, rgba(180,140,80,0.2) 100%);
+}
+
+/* ── 基础 ── */
+html, body {
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--amber);
+  font-family: var(--font-body);
+  font-size: 19px;
+  line-height: 1.85;
+  text-shadow: var(--glow-body);
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* 暗角叠层 */
+#app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  background: var(--vignette);
+  transition: background 0.35s ease;
+}
+
+/* 扫描线（深色时才可见）*/
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(0,0,0,0.055) 3px, rgba(0,0,0,0.055) 4px
+  );
+  pointer-events: none;
+  z-index: 9000;
+}
+[data-theme="light"] body::after { display: none; }
+
+/* ── Scene wrapper ── */
+.scene {
+  width: 100%;
+  max-width: 1000px;
+  padding: 52px 48px 72px;
+  animation: fadeIn 0.5s ease both;
+}
+
+/* ── Typography ── */
+h1 {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber-bright);
+  text-shadow: var(--glow-h1);
+  line-height: 1.2;
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  text-shadow: var(--glow-h2);
+}
+h3 {
+  font-family: var(--font-elegant);
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  color: var(--amber);
+  text-shadow: var(--glow-h3);
+}
+p {
+  font-family: var(--font-body);
+  font-size: 1.08rem;
+  color: var(--text);
+  text-shadow: none;
+  line-height: 1.9;
+}
+strong { color: var(--amber-bright); }
+em     { font-family: var(--font-hand); font-style: normal; font-size: 1.05em; }
+
+/* ── Stamp ── */
+.stamp {
+  display: inline-block;
+  border: 2px solid var(--red);
+  color: var(--red);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  padding: 3px 10px;
+  transform: rotate(-2.5deg);
+  text-transform: uppercase;
+  text-shadow: var(--glow-stamp);
+  box-shadow: 0 0 8px var(--glow-stamp-box) inset, var(--glow-stamp-box);
+}
+
+/* ── Cursor blink ── */
+.cursor::after {
+  content: '█';
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── Animations ── */
+.fade-in { animation: fadeIn 0.55s ease both; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Button ── */
+.btn {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  padding: 11px 32px;
+  cursor: pointer;
+  text-shadow: var(--glow-h3);
+  box-shadow: 0 0 8px rgba(200,168,75,0.06);
+  transition: 
+    background 0.18s,
+    color 0.18s,
+    box-shadow 0.18s,
+    text-shadow 0.18s;
+}
+
+.btn:hover {
+  background: var(--amber);
+  color: var(--bg);
+  text-shadow: none;
+  box-shadow: var(--glow-btn-hover);
+}
+
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn-red {
+  border-color: var(--red);
+  color: var(--red);
+  text-shadow: var(--glow-stamp);
+}
+.btn-red:hover { background: var(--red); color: #fff; text-shadow: none; }
+.btn-sm { font-size: 0.8rem; padding: 7px 20px; }
+
+/* ── Card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 32px 36px;
+  transition: background 0.35s, border-color 0.35s;
+}
+
+/* ── Divider ── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 22px 0;
+}
+
+/* ── Header bar ── */
+.top-bar {
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 14px rgba(200,168,75,0.07);
+  padding: 11px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+  letter-spacing: 0.1em;
+  transition: border-color 0.35s;
+}
+
+/* ── Theme toggle button ── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  border-color: var(--amber);
+  background: var(--amber);
+  color: var(--bg);
+  box-shadow: var(--glow-btn-hover);
+}
+.theme-icon {
+  display: block;
+  pointer-events: none;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { 
+  width: 6px; 
+  height: 6px; 
+}
+::-webkit-scrollbar-track { 
+  background: var(--bg); 
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb { 
+  background: var(--amber-dim); 
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: var(--amber); 
+}
+
+/* ── 浅色模式对比度优化 ── */
+[data-theme="light"] .chat-input {
+  border-width: 1.5px;
+  border-color: #9a6e30;
+}
+
+[data-theme="light"] .chat-input:focus {
+  border-color: #5a3608;
+  box-shadow: 
+    0 0 0 3px rgba(90,54,8,0.1),
+    0 2px 8px rgba(90,54,8,0.1);
+}
+
+[data-theme="light"] .card {
+  transition: 
+    background 0.35s ease, 
+    border-color 0.35s ease,
+    box-shadow 0.25s ease;
+}
+
+[data-theme="light"] .card:hover {
+  box-shadow: 0 4px 16px rgba(90,54,8,0.12);
+}
+
+[data-theme="light"] body {
+  background-image: 
+    radial-gradient(ellipse at 30% 20%, rgba(232,212,168,0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(212,192,148,0.3) 0%, transparent 50%);
+}
